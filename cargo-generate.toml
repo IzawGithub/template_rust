@@ -1,0 +1,21 @@
+[template]
+cargo_generate_version = ">=0.23.5"
+exclude = ["about.hbs", "cliff.toml"]
+ignore = [".github/workflows/build.yml"]
+
+[placeholders]
+# TODO: Regex match evens if there are repetition
+categories = { prompt = """
+Array of categories that the package will belong to.
+Categories should match one of the slugs found at `https://crates.io/category_slugs`.
+Maximum of 5.
+""", type = "string", default = "", regex = "^(?:(?:accessibility|aerospace::drones|aerospace::protocols|aerospace::simulation|aerospace::space-protocols|aerospace::unmanned-aerial-vehicles|algorithms|api-bindings|asynchronous|authentication|caching|command-line-interface|command-line-utilities|compilers|compression|computer-vision|concurrency|config|cryptography|cryptography::cryptocurrencies|data-structures|database|database-implementations|date-and-time|development-tools|development-tools::build-utils|development-tools::cargo-plugins|development-tools::debugging|development-tools::ffi|development-tools::procedural-macro-helpers|development-tools::profiling|development-tools::testing|email|embedded|emulators|encoding|external-ffi-bindings|filesystem|finance|game-development|game-engines|games|graphics|gui|hardware-support|internationalization|localization|mathematics|memory-management|multimedia|multimedia::audio|multimedia::encoding|multimedia::images|multimedia::video|network-programming|no-std|no-std::no-alloc|os|os::android-apis|os::freebsd-apis|os::linux-apis|os::macos-apis|os::unix-apis|os::windows-apis|parser-implementations|parsing|rendering|rendering::data-formats|rendering::engine|rendering::graphics-api|rust-patterns|science|science::bioinformatics|science::bioinformatics::genomics|science::bioinformatics::proteomics|science::bioinformatics::sequence-analysis|science::geo|science::neuroscience|science::robotics|simulation|template-engine|text-editors|text-processing|value-formatting|virtualization|visualization|wasm|web-programming|web-programming::http-client|web-programming::http-server|web-programming::websocket),?){0,5}$"}
+edition = { prompt = "Rust edition to use", choices = ["2015", "2018", "2021", "2024"], default = "2024"}
+keywords = { prompt = """
+Keywords to search for your application.
+Keywords are ASCII text, start with a letter, and only contain letters, numbers, `_` or `-`, with a length of at most 20 characters.
+Maximum of 5.
+""", type = "string", default = "", regex = "^(:?[a-z][a-z_-]{0,20},?){0,5}$"}
+publish = { prompt = "Will the package be published to `crates.io` ?", default = false, type = "bool"}
+repository = { prompt = "Remote repositories that the package will use\n", default = "", regex = "^(?:https://(:?github\\.com|gitlab\\.com|bitbucket.org)/.*?/[\\w-]*)?$"}
+description = { prompt = "Description of the package\n", type = "string" }

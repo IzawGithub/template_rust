@@ -1,0 +1,6 @@
+[toolchain]
+# Switch between toolchains dependening on what you need.
+# Nightly offer a better dev experience.
+
+# channel = "stable"
+channel = "nightly"

@@ -1,0 +1,130 @@
+import "./.just/all.just"
+
+default:
+    @just --list
+
+# Build the project.
+[group("build")]
+build *FLAGS: _check_install_rustup
+    cargo build {{ FLAGS }}
+
+[doc("Build an auditable binary using [cargo-auditable](https://github.com/rust-secure-code/cargo-auditable).
+This forces building with nightly.
+")]
+[group("build")]
+build-auditable *FLAGS: _check_install_nightly _check_install_cargo_auditable
+    CARGO_BUILD_SBOM=true cargo +nightly auditable build -Z sbom {{ FLAGS }}
+
+
+# Clean all project files.
+[group("chore")]
+clean: _check_install_rustup
+    cargo clean
+
+[group("chore")]
+deps: _check_install_nightly
+    cargo tree
+[doc("Update all packages in `Cargo.toml` to their latest semver compatible version, using [cargo-edit](https://github.com/killercup/cargo-edit).
+To upgrade to the latest semver *in*compatible version, add the `-i` flag.
+To list the upgradable crate, add the `n` flag")]
+[group("chore")]
+update *FLAGS: _check_install_cargo_edit
+    cargo upgrade {{ FLAGS }}
+    cargo update {{ FLAGS }}
+
+[doc("Update every bin currently installed with `cargo` using [cargo-update](https://github.com/nabijaczleweli/cargo-update).
+To list the updatable package, instead of updating, add the `-l` flag.")]
+[group("chore")]
+update-bins *FLAGS: _check_install_cargo_update
+    cargo install-update -a {{ FLAGS }}
+
+# Run [cargo-udeps](https://github.com/est31/cargo-udeps) to check if any dependencies is unused.
+[group("chore")]
+udeps *FLAGS: _check_install_cargo_udeps
+    cargo +nightly udeps {{ FLAGS }}
+
+
+# Run everything from the `ci` group, what's used for CI build.
+[group("ci")]
+ci-all: fmt lint coverage changelog license
+
+# Run [cargo-about](https://github.com/EmbarkStudios/cargo-about) to generate a license file that's an aggregate of all dependencies licenses.
+[group("ci")]
+license: _check_install_cargo_about
+    cargo about generate about.hbs > LICENSE-THIRD-PARTY.html
+
+# Run `cargo bench`
+[group("ci")]
+benchmark *FLAGS: _check_install_rustup
+    cargo bench {{ FLAGS }}
+
+# Generate `CHANGELOG.md` using [git-cliff](https://github.com/orhun/git-cliff)
+[group("ci")]
+changelog *FLAGS: _check_install_git_cliff
+    git cliff {{ FLAGS }}
+
+# Generate crate documentation.
+[group("ci")]
+doc *FLAGS: _check_install_rustup
+    cargo +nightly doc --no-deps --document-private-items -Zunstable-options -Zrustdoc-scrape-examples {{ FLAGS }}
+
+# Run [dprint](https://github.com/dprint/dprint) to check formatting.
+[group("ci")]
+fmt-check: _check_install_rustup
+    dprint check "**"
+
+# Run [dprint](https://github.com/dprint/dprint) to format files.
+[group("ci")]
+fmt: _check_install_rustup
+    dprint fmt "**"
+
+# Run the rust linter and [clippy](https://github.com/rust-lang/rust-clippy).
+[group("ci")]
+lint: _check_install_rustup
+    cargo +nightly clippy
+
+# Run [cargo-semver-checks](https://github.com/obi1kenobi/cargo-semver-checks) to make sure that the new version doesn't break semantic versionning.
+[group("ci")]
+semver rev *FLAGS: _check_install_cargo_semver_checks
+    cargo semver-checks --baseline-rev {{ rev }} {{ FLAGS }}
+
+# Run [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov) to get coverage.
+[group("ci")]
+[group("coverage")]
+coverage *FLAGS: _check_install_nightly _check_install_cargo_llvm_cov
+    cargo +nightly llvm-cov clean --workspace
+    cargo +nightly llvm-cov --doctests --branch --html {{ FLAGS }}
+
+[doc("Run [cargo-llvm-cov](https://github.com/taiki-e/cargo-llvm-cov?tab=readme-ov-file#display-coverage-in-vs-code)
+and get a `lcov.info` file that's usable to get coverage gutter in your IDE.
+")]
+[group("coverage")]
+coverage-gutter *FLAGS: _check_install_nightly _check_install_cargo_llvm_cov
+    cargo +nightly llvm-cov clean --workspace
+    cargo +nightly llvm-cov --lcov --output-path lcov.info {{ FLAGS }}
+
+
+# Run tests and doctests.
+[group("tests")]
+tests: _check_install_rustup
+    cargo test
+
+# Run [cargo-hack](https://github.com/taiki-e/cargo-hack) tests and doctests on the entire feature matrix. Very long execution time.
+[group("tests")]
+tests-all-features: _check_install_cargo_hack
+    cargo hack test --feature-powerset
+
+# Run [cargo-hack](https://github.com/taiki-e/cargo-hack) tests and doctests on all features individually.
+[group("tests")]
+tests-features: _check_install_cargo_hack
+    cargo hack test --each-feature
+
+# Run [cargo-insta](https://github.com/mitsuhiko/insta) to run and review snapshot tests.
+[group("tests")]
+tests-snapshots: _check_install_cargo_insta
+    cargo insta review
+
+# Generate a flamegraph, using [cargo-flamegraph](https://github.com/flamegraph-rs/flamegraph).
+[group("profiling")]
+flamegraph *FLAGS: _check_install_cargo_flamegraph
+    cargo flamegraph {{ FLAGS }}
