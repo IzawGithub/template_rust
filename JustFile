@@ -21,6 +21,7 @@ build-auditable *FLAGS: _check_install_nightly _check_install_cargo_auditable
 clean: _check_install_rustup
     cargo clean
 
+# Run `cargo tree` to get a list of dependencies of this project.
 [group("chore")]
 deps *FLAGS: _check_install_nightly
     cargo tree {{ FLAGS }}
