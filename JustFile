@@ -30,14 +30,14 @@ deps *FLAGS: _check_install_nightly
 To upgrade to the latest semver *in*compatible version, add the `-i` flag.
 To list the upgradable crate, add the `n` flag.")]
 [group("chore")]
-update *FLAGS: _check_install_cargo_edit
+upgrade *FLAGS: _check_install_cargo_edit
     cargo upgrade {{ FLAGS }}
-    cargo update {{ FLAGS }}
+    cargo update
 
-[doc("Update every bin currently installed with `cargo` using [cargo-update](https://github.com/nabijaczleweli/cargo-update).
+[doc("Upgrade every bin currently installed with `cargo` using [cargo-update](https://github.com/nabijaczleweli/cargo-update).
 To list the updatable package, instead of updating, add the `-l` flag.")]
 [group("chore")]
-update-bins *FLAGS: _check_install_cargo_update
+upgrade-bins *FLAGS: _check_install_cargo_update
     cargo install-update -a {{ FLAGS }}
 
 # Run [cargo-udeps](https://github.com/est31/cargo-udeps) to check if any dependencies is unused.
