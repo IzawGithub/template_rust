@@ -22,11 +22,12 @@ clean: _check_install_rustup
     cargo clean
 
 [group("chore")]
-deps: _check_install_nightly
-    cargo tree
-[doc("Update all packages in `Cargo.toml` to their latest semver compatible version, using [cargo-edit](https://github.com/killercup/cargo-edit).
+deps *FLAGS: _check_install_nightly
+    cargo tree {{ FLAGS }}
+
+[doc("Upgrade all packages in `Cargo.toml` to their latest semver compatible version, using [cargo-edit](https://github.com/killercup/cargo-edit).
 To upgrade to the latest semver *in*compatible version, add the `-i` flag.
-To list the upgradable crate, add the `n` flag")]
+To list the upgradable crate, add the `n` flag.")]
 [group("chore")]
 update *FLAGS: _check_install_cargo_edit
     cargo upgrade {{ FLAGS }}
@@ -106,18 +107,18 @@ coverage-gutter *FLAGS: _check_install_nightly _check_install_cargo_llvm_cov
 
 # Run tests and doctests.
 [group("tests")]
-tests: _check_install_rustup
-    cargo test
+tests *FLAGS: _check_install_rustup
+    cargo test {{ FLAGS }}
 
 # Run [cargo-hack](https://github.com/taiki-e/cargo-hack) tests and doctests on the entire feature matrix. Very long execution time.
 [group("tests")]
-tests-all-features: _check_install_cargo_hack
-    cargo hack test --feature-powerset
+tests-all-features *FLAGS: _check_install_cargo_hack
+    cargo hack test --feature-powerset {{ FLAGS }}
 
 # Run [cargo-hack](https://github.com/taiki-e/cargo-hack) tests and doctests on all features individually.
 [group("tests")]
-tests-features: _check_install_cargo_hack
-    cargo hack test --each-feature
+tests-features *FLAGS: _check_install_cargo_hack
+    cargo hack test --each-feature {{ FLAGS }}
 
 # Run [cargo-insta](https://github.com/mitsuhiko/insta) to run and review snapshot tests.
 [group("tests")]
