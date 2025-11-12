@@ -36,4 +36,5 @@ If your project is hosted on [Github], you need to update the [cliff.toml](./cli
 [cargo-generate]: https://github.com/cargo-generate/cargo-generate
 [Just command runner]: https://github.com/casey/just
 [conventional commits]: https://www.conventionalcommits.org
+[Github]: https://github.com
 [git-cliff]: https://github.com/orhun/git-cliff
