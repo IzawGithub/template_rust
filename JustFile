@@ -70,12 +70,12 @@ doc *FLAGS: _check_install_rustup
 
 # Run [dprint](https://github.com/dprint/dprint) to check formatting.
 [group("ci")]
-fmt-check: _check_install_rustup
+fmt-check: _check_install_cargo_dprint
     dprint check "**"
 
 # Run [dprint](https://github.com/dprint/dprint) to format files.
 [group("ci")]
-fmt: _check_install_rustup
+fmt: _check_install_cargo_dprint
     dprint fmt "**"
 
 # Run the rust linter and [clippy](https://github.com/rust-lang/rust-clippy).

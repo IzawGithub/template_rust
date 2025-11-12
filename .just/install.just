@@ -65,6 +65,11 @@ _install_cargo_udeps:
 _install_cargo_update:
     cargo install cargo-update
 
+[confirm("Install `dprint` as a cargo bin?")]
+[group("install")]
+_install_cargo_dprint:
+    cargo install dprint
+
 [confirm("Install `git-cliff` as a cargo bin?")]
 [group("install")]
 _install_git_cliff:

@@ -98,6 +98,14 @@ _check_install_cargo_update: _check_install_rustup
     fi
 
 [group("install")]
+_check_install_cargo_dprint: _check_install_rustup
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if !(dprint --help > /dev/null 2>&1); then
+        just _install_cargo_dprint
+    fi
+
+[group("install")]
 _check_install_git_cliff: _check_install_rustup
     #!/usr/bin/env bash
     set -euo pipefail
